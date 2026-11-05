@@ -1,0 +1,123 @@
+# Generated from baseline.yaml. Edit YAML or assets/d2-style.d2, then regenerate.
+direction: right
+classes: {
+  evidence_supported: {
+    style: {
+      fill: "#E8F5E9"
+      stroke: "#1B5E20"
+      border-radius: 6
+    }
+  }
+  evidence_inferred: {
+    style: {
+      fill: "#FFF8E1"
+      stroke: "#7A5A00"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_proposed: {
+    style: {
+      fill: "#E3F2FD"
+      stroke: "#0D47A1"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_unknown: {
+    style: {
+      fill: "#F5F5F5"
+      stroke: "#555555"
+      stroke-dash: 2
+      border-radius: 6
+    }
+  }
+  evidence_conflicted: {
+    style: {
+      fill: "#FFEBEE"
+      stroke: "#B71C1C"
+      stroke-width: 3
+      border-radius: 6
+    }
+  }
+}
+
+_view_title: "Current review reconciliation scenario" {
+  shape: text
+}
+
+_scenario_context: "Scenario: Reconcile pull-request review" {
+  class: evidence_supported
+  tooltip: "Trigger: A pull request or review cycle needs current readiness.\nPreconditions: PR identity and head SHA resolve.; Review control ref is writable.\nControls: pr_number; head_sha; review_id\nOutputs: Durable review cycle and readiness state.\nFailures: Head mismatch leaves review stale.; Missing validation blocks readiness.; Control-ref conflict preserves prior state.\nSignals: Review ledger event.; Stale-head marker.; Readiness decision."
+}
+
+validation_ref: "Validation result ref\n[supported]" {
+  class: evidence_supported
+  shape: cylinder
+  tooltip: "ID: validation_ref\nResponsibility: Publish durable exact-head validation results.\nOwner: Tabellio maintainers\nRuntime: Git ref\nState variables: commit_sha; manifest_digest; decision\nInvariants: Non-fast-forward or stale publication is rejected.\nEvidence: implemented/source_code: scripts/tabellio-validator.mjs:1#validation command @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/lib/control-ref-transport.mjs:1#control-ref transport @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+github: "GitHub\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: github\nResponsibility: Store ordinary code and provide the pull-request review surface.\nOwner: GitHub\nRuntime: Hosted Git service\nState variables: pr_number; head_sha; checks; reviews\nInvariants: Code and review identity use repository and head identifiers.\nEvidence: implemented/source_code: scripts/providers/github-provider.mjs:1#GitHubProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command: "Review and reconciliation command\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: review_command\nResponsibility: Import GitHub and agent feedback, retain triage, and evaluate readiness.\nOwner: Tabellio maintainers\nRuntime: Node.js\nState variables: review_id; pr_number; head_sha; readiness\nInvariants: Stale feedback remains visible and cannot authorize a new head.\nEvidence: implemented/source_code: scripts/tabellio-review.mjs:1#review command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_ledger: "Review ledger\n[supported]" {
+  class: evidence_supported
+  shape: cylinder
+  tooltip: "ID: review_ledger\nResponsibility: Store review feedback, findings, dispositions, fixes, and readiness state.\nOwner: Tabellio maintainers\nRuntime: Git control ref\nState variables: review_cycle; finding_status; head_sha\nInvariants: Review state is independently verifiable.\nEvidence: implemented/source_code: scripts/tabellio-review.mjs:1#review command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/lib/control-ref-transport.mjs:1#control-ref transport @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command -> github: "1. Read PR and review state / GitHub REST API\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: review_to_github\nRelationship: reads\nContract: repository, PR, review, check, and status responses\nAuthentication: scoped GitHub credential\nMode: sync\nTimeout: 15m\nRetries: bounded page retry\nIdempotency: repository plus pr_number plus head_sha\nFallback: retain stale evidence and mark validating\nFailure propagation: review cannot become ready\nEvidence: implemented/source_code: scripts/providers/github-provider.mjs:1#GitHubProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command -> validation_ref: "2. Resolve exact validation / Git ref read\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: review_to_validation_ref\nRelationship: reads\nContract: tabellio validation result\nAuthentication: local repository identity\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: repository plus commit_sha\nFallback: mark validation unavailable\nFailure propagation: review remains blocked\nEvidence: implemented/source_code: scripts/tabellio-validator.mjs:1#validation command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command -> review_ledger: "3. Record feedback and readiness / Git control ref\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: review_to_review_ledger\nRelationship: writes\nContract: tabellio review cycle\nAuthentication: approval-bound ref transport\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: review_id plus head_sha\nFallback: retain local reconciliation\nFailure propagation: durable readiness is unavailable\nEvidence: implemented/source_code: scripts/tabellio-review.mjs:1#review command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/lib/control-ref-transport.mjs:1#control-ref transport @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+_legend: "Evidence state" {
+  direction: right
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#9CA3AF"
+  }
+  supported: "Supported" {
+    class: evidence_supported
+  }
+  inferred: "Inferred" {
+    class: evidence_inferred
+  }
+  proposed: "Proposed" {
+    class: evidence_proposed
+  }
+  unknown: "Unknown" {
+    class: evidence_unknown
+  }
+  conflicted: "Conflicted" {
+    class: evidence_conflicted
+  }
+}

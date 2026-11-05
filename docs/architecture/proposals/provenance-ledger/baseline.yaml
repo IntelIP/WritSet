@@ -1,0 +1,536 @@
+schema_version: 1
+snapshot:
+  repository: "/Users/hudson/Documents/GitHub/Tabellio"
+  revision: "979a81d07994f8024c3b071581165de94685d2ca"
+  dirty: true
+  observed_at: "2026-08-30T06:49:19Z"
+  track: "proposal-baseline"
+
+evidence:
+  - id: "workflow-model"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/workflow-model.md"
+      line: 1
+      symbol: "Tabellio Workflow Model"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "tooling-stack"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/tooling-stack.md"
+      line: 1
+      symbol: "Agentic Tooling Stack"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "native-git-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/capture-tabellio-context.mjs"
+      line: 1
+      symbol: "context capture"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "entire-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/entire-ledger-provider.mjs"
+      line: 1
+      symbol: "EntireLedgerProvider"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "stack-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/git-spice-stack-manager.mjs"
+      line: 1
+      symbol: "GitSpiceStackManager"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "github-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/github-provider.mjs"
+      line: 1
+      symbol: "GitHubProvider"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "validation-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/tabellio-validator.mjs"
+      line: 1
+      symbol: "validation command"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "review-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/tabellio-review.mjs"
+      line: 1
+      symbol: "review command"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "control-ref-code"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/lib/control-ref-transport.mjs"
+      line: 1
+      symbol: "control-ref transport"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "validation-doc"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/validation-runner.md"
+      line: 1
+      symbol: "Validation runner"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "review-doc"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/review-loop.md"
+      line: 1
+      symbol: "review loop"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+
+nodes:
+  - id: "task_source"
+    label: "Task source"
+    kind: "external"
+    responsibility: "Provide the request and acceptance context."
+    owner: "Operator or task system"
+    runtime: "Issue, ticket, chat, or manual request"
+    state_variables: ["task_ref", "acceptance_contract"]
+    invariants: ["Task intent is retained."]
+    external: true
+    evidence_state: "inferred"
+    evidence: ["workflow-model", "tooling-stack"]
+  - id: "tabellio_cli"
+    label: "Tabellio Node CLI"
+    kind: "service"
+    responsibility: "Orchestrate the Git-native agent workflow and evidence contracts."
+    owner: "Tabellio maintainers"
+    runtime: "Node.js"
+    state_variables: ["run_id", "worktree", "head_sha"]
+    invariants: ["Run state is bound to an exact repository and revision."]
+    evidence_state: "supported"
+    evidence: ["workflow-model", "native-git-code", "tooling-stack"]
+  - id: "git_store"
+    label: "Git repository and worktree"
+    kind: "database"
+    responsibility: "Store commits, refs, diffs, branches, and isolated worktrees."
+    owner: "Repository operator"
+    runtime: "Git"
+    state_variables: ["commit_sha", "ref", "worktree"]
+    invariants: ["Commit IDs are immutable."]
+    evidence_state: "supported"
+    evidence: ["native-git-code", "tooling-stack"]
+  - id: "entire_source"
+    label: "Entire checkpoint ledger"
+    kind: "external"
+    responsibility: "Provide checkpoint and session metadata for agent-assisted work."
+    owner: "Entire"
+    runtime: "Entire CLI"
+    state_variables: ["checkpoint_id", "session_id", "checkpoint_digest"]
+    invariants: ["Checkpoint identity is preserved."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["entire-code", "tooling-stack"]
+  - id: "context_packet"
+    label: "Context packet"
+    kind: "data_store"
+    responsibility: "Bind task, actor, exact refs, changed files, and checkpoint metadata."
+    owner: "Tabellio maintainers"
+    runtime: "Versioned JSON"
+    state_variables: ["base_sha", "head_sha", "merge_base_sha", "context_digest"]
+    invariants: ["Integrity excludes the self-integrity field from its hash."]
+    evidence_state: "supported"
+    evidence: ["workflow-model", "native-git-code"]
+  - id: "evidence_store"
+    label: "Evidence envelope"
+    kind: "data_store"
+    responsibility: "Record commands, checks, approvals, artifacts, and side-effect policy."
+    owner: "Tabellio maintainers"
+    runtime: "Versioned JSON"
+    state_variables: ["run_id", "head_sha", "checks", "approvals"]
+    invariants: ["Protected action classes default to deny."]
+    evidence_state: "supported"
+    evidence: ["workflow-model", "tooling-stack"]
+  - id: "validation_worker"
+    label: "Validation worker"
+    kind: "service"
+    responsibility: "Run committed validation manifests against an exact revision."
+    owner: "Operator-managed worker"
+    runtime: "Node.js and repository tools"
+    state_variables: ["validation_id", "revision", "decision"]
+    invariants: ["Validation is bound to the assessed commit and manifest."]
+    evidence_state: "supported"
+    evidence: ["validation-code", "validation-doc"]
+  - id: "validation_ref"
+    label: "Validation result ref"
+    kind: "data_store"
+    responsibility: "Publish durable exact-head validation results."
+    owner: "Tabellio maintainers"
+    runtime: "Git ref"
+    state_variables: ["commit_sha", "manifest_digest", "decision"]
+    invariants: ["Non-fast-forward or stale publication is rejected."]
+    evidence_state: "supported"
+    evidence: ["validation-code", "control-ref-code"]
+  - id: "git_spice"
+    label: "git-spice"
+    kind: "external"
+    responsibility: "Represent stacked branches and change-request relationships."
+    owner: "Operator-managed tool"
+    runtime: "git-spice executable"
+    state_variables: ["branch", "parent", "children", "head_sha"]
+    invariants: ["Stack snapshots are tied to the current repository state."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["stack-code", "tooling-stack"]
+  - id: "github"
+    label: "GitHub"
+    kind: "external"
+    responsibility: "Store ordinary code and provide the pull-request review surface."
+    owner: "GitHub"
+    runtime: "Hosted Git service"
+    state_variables: ["pr_number", "head_sha", "checks", "reviews"]
+    invariants: ["Code and review identity use repository and head identifiers."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["github-code", "tooling-stack"]
+  - id: "review_command"
+    label: "Review and reconciliation command"
+    kind: "service"
+    responsibility: "Import GitHub and agent feedback, retain triage, and evaluate readiness."
+    owner: "Tabellio maintainers"
+    runtime: "Node.js"
+    state_variables: ["review_id", "pr_number", "head_sha", "readiness"]
+    invariants: ["Stale feedback remains visible and cannot authorize a new head."]
+    evidence_state: "supported"
+    evidence: ["review-code", "review-doc"]
+  - id: "review_ledger"
+    label: "Review ledger"
+    kind: "data_store"
+    responsibility: "Store review feedback, findings, dispositions, fixes, and readiness state."
+    owner: "Tabellio maintainers"
+    runtime: "Git control ref"
+    state_variables: ["review_cycle", "finding_status", "head_sha"]
+    invariants: ["Review state is independently verifiable."]
+    evidence_state: "supported"
+    evidence: ["review-code", "review-doc", "control-ref-code"]
+
+edges:
+  - id: "task_to_cli"
+    from: "task_source"
+    to: "tabellio_cli"
+    relationship: "feeds"
+    label: "Start run"
+    protocol: "task payload or CLI arguments"
+    contract: "taskSource"
+    authentication: "operator identity"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "task_ref plus run_id"
+    fallback: "reject run before workspace creation"
+    failure_propagation: "run is not started"
+    trust_boundary: true
+    evidence_state: "inferred"
+    evidence: ["workflow-model", "tooling-stack"]
+  - id: "cli_to_git"
+    from: "tabellio_cli"
+    to: "git_store"
+    relationship: "calls"
+    label: "Resolve and manage repository state"
+    protocol: "Git CLI"
+    contract: "RepositoryStore"
+    authentication: "local process identity"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "run_id plus exact ref"
+    fallback: "fail closed"
+    failure_propagation: "run is blocked"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["native-git-code", "tooling-stack"]
+  - id: "cli_to_entire"
+    from: "tabellio_cli"
+    to: "entire_source"
+    relationship: "calls"
+    label: "Resolve checkpoint metadata"
+    protocol: "Entire CLI JSON"
+    contract: "entire checkpoint explain"
+    authentication: "local Entire CLI"
+    mode: "sync"
+    timeout: "60s"
+    retries: "none"
+    idempotency: "checkpoint_id"
+    fallback: "migration Git-note mode only"
+    failure_propagation: "context capture fails"
+    trust_boundary: true
+    evidence_state: "supported"
+    evidence: ["entire-code", "tooling-stack"]
+  - id: "cli_to_context"
+    from: "tabellio_cli"
+    to: "context_packet"
+    relationship: "writes"
+    label: "Write exact context"
+    protocol: "canonical JSON"
+    contract: "tabellio-context/v0.1"
+    authentication: "local process identity"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "run_id plus context_digest"
+    fallback: "retain no packet"
+    failure_propagation: "evidence cannot be bound"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["workflow-model", "native-git-code"]
+  - id: "cli_to_evidence"
+    from: "tabellio_cli"
+    to: "evidence_store"
+    relationship: "writes"
+    label: "Write evidence envelope"
+    protocol: "canonical JSON"
+    contract: "tabellio-evidence/v0.1"
+    authentication: "local process identity"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "run_id plus evidence_digest"
+    fallback: "retain failed evidence for diagnosis"
+    failure_propagation: "evidence validation fails"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["workflow-model", "tooling-stack"]
+  - id: "cli_to_validator"
+    from: "tabellio_cli"
+    to: "validation_worker"
+    relationship: "calls"
+    label: "Run exact-commit validation"
+    protocol: "argv manifest"
+    contract: "tabellio validation manifest"
+    authentication: "worker identity"
+    mode: "sync"
+    timeout: "bounded by worker policy"
+    retries: "none"
+    idempotency: "repository plus commit plus manifest_digest"
+    fallback: "decision blocked"
+    failure_propagation: "validation is failed or unavailable"
+    trust_boundary: true
+    evidence_state: "supported"
+    evidence: ["validation-code", "validation-doc"]
+  - id: "validator_to_validation_ref"
+    from: "validation_worker"
+    to: "validation_ref"
+    relationship: "writes"
+    label: "Publish validation result"
+    protocol: "Git ref update"
+    contract: "tabellio validation result"
+    authentication: "approval-bound ref transport"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "validation_id plus assessed_commit"
+    fallback: "retain local result"
+    failure_propagation: "readiness remains blocked"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["validation-code", "control-ref-code"]
+  - id: "cli_to_git_spice"
+    from: "tabellio_cli"
+    to: "git_spice"
+    relationship: "calls"
+    label: "Read or execute stack operation"
+    protocol: "git-spice CLI JSON"
+    contract: "tabellio-stack/v0.1"
+    authentication: "local operator identity"
+    mode: "sync"
+    timeout: "60s"
+    retries: "none"
+    idempotency: "operation_id plus head_sha"
+    fallback: "publish no operation"
+    failure_propagation: "stack state remains unchanged"
+    trust_boundary: true
+    evidence_state: "supported"
+    evidence: ["stack-code", "tooling-stack"]
+  - id: "review_to_github"
+    from: "review_command"
+    to: "github"
+    relationship: "reads"
+    label: "Read PR and review state"
+    protocol: "GitHub REST API"
+    contract: "repository, PR, review, check, and status responses"
+    authentication: "scoped GitHub credential"
+    mode: "sync"
+    timeout: "15m"
+    retries: "bounded page retry"
+    idempotency: "repository plus pr_number plus head_sha"
+    fallback: "retain stale evidence and mark validating"
+    failure_propagation: "review cannot become ready"
+    trust_boundary: true
+    evidence_state: "supported"
+    evidence: ["github-code", "review-doc"]
+  - id: "review_to_validation_ref"
+    from: "review_command"
+    to: "validation_ref"
+    relationship: "reads"
+    label: "Resolve exact validation"
+    protocol: "Git ref read"
+    contract: "tabellio validation result"
+    authentication: "local repository identity"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "repository plus commit_sha"
+    fallback: "mark validation unavailable"
+    failure_propagation: "review remains blocked"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["validation-code", "review-doc"]
+  - id: "review_to_review_ledger"
+    from: "review_command"
+    to: "review_ledger"
+    relationship: "writes"
+    label: "Record feedback and readiness"
+    protocol: "Git control ref"
+    contract: "tabellio review cycle"
+    authentication: "approval-bound ref transport"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "review_id plus head_sha"
+    fallback: "retain local reconciliation"
+    failure_propagation: "durable readiness is unavailable"
+    trust_boundary: false
+    evidence_state: "supported"
+    evidence: ["review-code", "review-doc", "control-ref-code"]
+
+scenarios:
+  - id: "capture_context"
+    label: "Capture an agent run context"
+    trigger: "An operator starts an agent-assisted repository run."
+    preconditions: ["Repository and task source resolve.", "Worktree can be isolated."]
+    control_variables: ["run_id", "base_sha", "head_sha", "checkpoint_id"]
+    steps:
+      - edge: "cli_to_git"
+        when: "The run resolves repository and worktree state."
+        state_effects:
+          - node: "git_store"
+            variable: "worktree"
+            operation: "create isolated worktree"
+      - edge: "cli_to_entire"
+        when: "Checkpoint metadata is required."
+        state_effects:
+          - node: "context_packet"
+            variable: "checkpoint_id"
+            operation: "bind checkpoint identity"
+      - edge: "cli_to_context"
+        when: "Exact base, head, and merge-base are known."
+        state_effects:
+          - node: "context_packet"
+            variable: "context_digest"
+            operation: "write integrity-protected packet"
+      - edge: "cli_to_evidence"
+        when: "Commands, checks, approvals, and artifacts are collected."
+        state_effects:
+          - node: "evidence_store"
+            variable: "run_id"
+            operation: "write evidence envelope"
+    outputs: ["Context packet and evidence envelope bound to the run."]
+    failure_outcomes: ["Unknown checkpoint blocks context capture.", "Integrity or schema validation fails."]
+    observable_signals: ["Context digest.", "Evidence validation result.", "Run failure reason."]
+  - id: "validate_exact_head"
+    label: "Validate an exact commit"
+    trigger: "A candidate commit is ready for validation."
+    preconditions: ["Manifest is committed.", "Trusted worker is available."]
+    control_variables: ["commit_sha", "manifest_digest", "validation_id"]
+    steps:
+      - edge: "cli_to_validator"
+        when: "The runner resolves the exact candidate revision."
+        state_effects:
+          - node: "validation_worker"
+            variable: "decision"
+            operation: "execute committed checks"
+      - edge: "validator_to_validation_ref"
+        when: "The result is complete and publication is approved."
+        state_effects:
+          - node: "validation_ref"
+            variable: "decision"
+            operation: "publish exact-head result"
+    outputs: ["Durable validation decision tied to commit and manifest."]
+    failure_outcomes: ["Worker failure.", "Stale or non-fast-forward publication.", "Validation fails."]
+    observable_signals: ["Validation result ref.", "Command statuses.", "Manifest digest."]
+  - id: "reconcile_review"
+    label: "Reconcile pull-request review"
+    trigger: "A pull request or review cycle needs current readiness."
+    preconditions: ["PR identity and head SHA resolve.", "Review control ref is writable."]
+    control_variables: ["pr_number", "head_sha", "review_id"]
+    steps:
+      - edge: "review_to_github"
+        when: "The review command reads current PR feedback and checks."
+        state_effects:
+          - node: "review_command"
+            variable: "head_sha"
+            operation: "freeze current review subject"
+      - edge: "review_to_validation_ref"
+        when: "The exact validation result is looked up."
+        state_effects:
+          - node: "review_command"
+            variable: "readiness"
+            operation: "require matching validation"
+      - edge: "review_to_review_ledger"
+        when: "Feedback, fixes, and readiness are reconciled."
+        state_effects:
+          - node: "review_ledger"
+            variable: "review_cycle"
+            operation: "record current reconciliation"
+    outputs: ["Durable review cycle and readiness state."]
+    failure_outcomes: ["Head mismatch leaves review stale.", "Missing validation blocks readiness.", "Control-ref conflict preserves prior state."]
+    observable_signals: ["Review ledger event.", "Stale-head marker.", "Readiness decision."]
+
+views:
+  - id: "context"
+    title: "Current context and evidence path"
+    type: "context"
+    nodes: ["tabellio_cli", "git_store", "entire_source", "context_packet", "evidence_store"]
+  - id: "topology"
+    title: "Current Tabellio topology"
+    type: "topology"
+    nodes: ["*"]
+  - id: "data"
+    title: "Current durable data boundaries"
+    type: "data"
+    nodes: ["git_store", "context_packet", "evidence_store", "validation_ref", "review_ledger"]
+  - id: "trust"
+    title: "Current trust boundaries"
+    type: "trust"
+    nodes: ["task_source", "tabellio_cli", "entire_source", "validation_worker", "git_spice", "github", "review_command"]
+  - id: "capture_context"
+    title: "Current context capture scenario"
+    type: "scenario"
+    scenario: "capture_context"
+  - id: "validate_exact_head"
+    title: "Current exact-head validation scenario"
+    type: "scenario"
+    scenario: "validate_exact_head"
+  - id: "reconcile_review"
+    title: "Current review reconciliation scenario"
+    type: "scenario"
+    scenario: "reconcile_review"

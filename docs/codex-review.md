@@ -38,3 +38,7 @@ Codex review is not:
 - proof that agent output is secure
 
 When the repository commits a product-validation manifest, review begins only after the exact pull-request head has a `passed` v0.3 decision. A `blocked` decision means the evidence is incomplete or untrustworthy; it is not a product pass and should not be converted into reviewer guesswork.
+
+## Evidence-backed feedback loop
+
+The proposed provenance ledger would let Codex review consume a bounded packet containing the exact head, applicable project rules, validation and security evidence, recurring validated findings, and similar accepted fixes. This is a retrieval and evaluation loop, not automatic global model self-modification. Lessons must be scoped, redacted, versioned, and linked to evidence before they influence later runs. See [Agent provenance ledger and Codex feedback plan](agent-provenance-ledger-and-codex-feedback.md).

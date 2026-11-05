@@ -1,0 +1,145 @@
+# Generated from target.yaml. Edit YAML or assets/d2-style.d2, then regenerate.
+direction: right
+classes: {
+  evidence_supported: {
+    style: {
+      fill: "#E8F5E9"
+      stroke: "#1B5E20"
+      border-radius: 6
+    }
+  }
+  evidence_inferred: {
+    style: {
+      fill: "#FFF8E1"
+      stroke: "#7A5A00"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_proposed: {
+    style: {
+      fill: "#E3F2FD"
+      stroke: "#0D47A1"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_unknown: {
+    style: {
+      fill: "#F5F5F5"
+      stroke: "#555555"
+      stroke-dash: 2
+      border-radius: 6
+    }
+  }
+  evidence_conflicted: {
+    style: {
+      fill: "#FFEBEE"
+      stroke: "#B71C1C"
+      stroke-width: 3
+      border-radius: 6
+    }
+  }
+}
+
+_view_title: "Target project lesson promotion scenario" {
+  shape: text
+}
+
+_scenario_context: "Scenario: Promote a project lesson" {
+  class: evidence_proposed
+  tooltip: "Trigger: Repeated validated outcomes suggest a behavior or workflow lesson.\nPreconditions: Evidence links resolve.; Project and privacy scope are known.; Replay case is reproducible.\nControls: case_id; baseline_version; candidate_version; lesson_id; scope\nOutputs: Versioned lesson with evidence references and explicit scope.\nFailures: Insufficient recurrence keeps lesson as candidate.; Privacy review rejects global promotion.; Regression retires the lesson.; Missing evidence prevents retrieval.\nSignals: Evaluation result.; Human decision.; Lesson version.; Scope and evidence references.; Later recurrence rate."
+}
+
+read_model: "Operational read model\n[proposed]" {
+  class: evidence_proposed
+  shape: cylinder
+  tooltip: "ID: read_model\nResponsibility: Serve current lineage, stack, review, and exact-head freshness queries.\nOwner: Tabellio maintainers\nRuntime: PostgreSQL read projection\nState variables: head_sha; review_status; projection_revision\nInvariants: A projection never authorizes a head different from its assessed head.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+context_broker: "Scoped context broker\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: context_broker\nResponsibility: Return bounded project-specific evidence and lessons to a review or agent run.\nOwner: Tabellio maintainers\nRuntime: Read-only Node.js API or MCP tool\nState variables: request_scope; head_sha; packet_digest; access_decision\nInvariants: Context is scoped to the requester, project, repository, and exact head.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+evaluation_worker: "Evaluation and lesson worker\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: evaluation_worker\nResponsibility: Replay cases, compare behavior, and create scoped candidate lessons.\nOwner: Tabellio maintainers and evaluation owner\nRuntime: Node.js worker and evaluation harness\nState variables: case_id; baseline_version; candidate_version; outcome\nInvariants: Lessons require evidence references and versioned outcomes.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://developers.openai.com/api/docs/guides/agent-evals @ current-2026-08-30"
+  link: "https://developers.openai.com/api/docs/guides/agent-evals"
+}
+
+lesson_store: "Scoped lesson store\n[proposed]" {
+  class: evidence_proposed
+  shape: cylinder
+  tooltip: "ID: lesson_store\nResponsibility: Store versioned project, organization, and general lessons with evidence links.\nOwner: Tabellio maintainers\nRuntime: PostgreSQL projection\nState variables: lesson_id; scope; status; version; evidence_refs\nInvariants: Candidate lessons do not silently change global behavior.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://developers.openai.com/api/docs/guides/agent-evals @ current-2026-08-30"
+  link: "https://developers.openai.com/api/docs/guides/agent-evals"
+}
+
+human_approver: "Human approver\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: human_approver\nResponsibility: Own accepted risk, privacy decisions, and promotion approval.\nOwner: Assigned human owner\nRuntime: Review interface\nState variables: decision; approver; decision_time\nInvariants: The system never fabricates human approval.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+evaluation_worker -> read_model: "1. Select replay cases and outcomes / read-only query API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: evaluation_reads_model\nRelationship: reads\nContract: validated finding and outcome projection\nAuthentication: evaluation workload identity\nMode: sync\nTimeout: 10s\nRetries: one retry\nIdempotency: case_id plus projection_revision\nFallback: case remains pending\nFailure propagation: lesson promotion is delayed\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://developers.openai.com/api/docs/guides/agent-evals @ current-2026-08-30"
+  link: "https://developers.openai.com/api/docs/guides/agent-evals"
+}
+
+evaluation_worker -> human_approver: "2. Request promotion decision / review UI or approval API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: evaluation_to_human\nRelationship: calls\nContract: lesson promotion record\nAuthentication: named human identity\nMode: sync\nTimeout: 7d\nRetries: none\nIdempotency: lesson_id plus version\nFallback: remain candidate\nFailure propagation: lesson cannot become approved\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+evaluation_worker -> lesson_store: "3. Store candidate or approved lesson / PostgreSQL transaction\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: evaluation_writes_lessons\nRelationship: writes\nContract: versioned lesson with evidence references\nAuthentication: evaluation workload credential\nMode: sync\nTimeout: 5s\nRetries: one transaction retry\nIdempotency: lesson_id plus version\nFallback: retain candidate artifact\nFailure propagation: lesson is not available for retrieval\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://developers.openai.com/api/docs/guides/agent-evals @ current-2026-08-30"
+  link: "https://developers.openai.com/api/docs/guides/agent-evals"
+}
+
+context_broker -> lesson_store: "4. Read scoped lessons / read-only query API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: context_reads_lessons\nRelationship: reads\nContract: versioned lesson and evidence references\nAuthentication: project-scoped authorization\nMode: sync\nTimeout: 2s\nRetries: one retry\nIdempotency: request_id plus scope plus head_sha\nFallback: return context without lessons\nFailure propagation: run continues without optional lessons\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+_legend: "Evidence state" {
+  direction: right
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#9CA3AF"
+  }
+  supported: "Supported" {
+    class: evidence_supported
+  }
+  inferred: "Inferred" {
+    class: evidence_inferred
+  }
+  proposed: "Proposed" {
+    class: evidence_proposed
+  }
+  unknown: "Unknown" {
+    class: evidence_unknown
+  }
+  conflicted: "Conflicted" {
+    class: evidence_conflicted
+  }
+}

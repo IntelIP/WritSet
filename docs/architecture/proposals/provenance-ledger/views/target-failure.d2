@@ -1,0 +1,211 @@
+# Generated from target.yaml. Edit YAML or assets/d2-style.d2, then regenerate.
+direction: right
+classes: {
+  evidence_supported: {
+    style: {
+      fill: "#E8F5E9"
+      stroke: "#1B5E20"
+      border-radius: 6
+    }
+  }
+  evidence_inferred: {
+    style: {
+      fill: "#FFF8E1"
+      stroke: "#7A5A00"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_proposed: {
+    style: {
+      fill: "#E3F2FD"
+      stroke: "#0D47A1"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_unknown: {
+    style: {
+      fill: "#F5F5F5"
+      stroke: "#555555"
+      stroke-dash: 2
+      border-radius: 6
+    }
+  }
+  evidence_conflicted: {
+    style: {
+      fill: "#FFEBEE"
+      stroke: "#B71C1C"
+      stroke-width: 3
+      border-radius: 6
+    }
+  }
+}
+
+_view_title: "Target failure and recovery topology" {
+  shape: text
+}
+
+source_adapters: "Source adapters\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: source_adapters\nResponsibility: Translate provider records into bounded canonical events.\nOwner: Tabellio maintainers\nRuntime: Node.js worker\nState variables: source_event_id; adapter_version; idempotency_key\nInvariants: Provider-specific differences do not change canonical identity fields.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+event_bus: "Event queue\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: event_bus\nResponsibility: Buffer canonical events and provide retry/backpressure behavior.\nOwner: Platform operator\nRuntime: Managed queue or durable local queue\nState variables: event_id; delivery_count; dead_letter_state\nInvariants: Delivery is at-least-once and consumers are idempotent.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+ingest_worker: "Ingest worker\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: ingest_worker\nResponsibility: Accept events, enforce idempotency, and coordinate canonical persistence.\nOwner: Tabellio maintainers\nRuntime: Node.js worker\nState variables: event_id; ingest_status; payload_digest\nInvariants: A retry does not create duplicate evidence.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+canonicalizer: "Redaction and canonicalizer\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: canonicalizer\nResponsibility: Redact secrets, classify sensitivity, canonicalize payloads, and compute digests.\nOwner: Security and Tabellio maintainers\nRuntime: Node.js worker\nState variables: redaction_status; sensitivity; payload_sha256\nInvariants: Secrets are blocked before durable persistence.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+provenance_ledger: "PostgreSQL provenance ledger\n[proposed]" {
+  class: evidence_proposed
+  shape: cylinder
+  tooltip: "ID: provenance_ledger\nResponsibility: Store typed facts, JSONB payloads, stable identities, and critical relationships.\nOwner: Tabellio maintainers\nRuntime: PostgreSQL\nState variables: run_id; event_id; repository_id; commit_sha; checkpoint_id\nInvariants: Critical references satisfy relational constraints.; Facts are append-only or dispositioned.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/datatype-json.html @ PostgreSQL 18 current documentation; intended/external_document: https://www.postgresql.org/docs/current/ddl-constraints.html @ PostgreSQL 18 current documentation; intended/external_document: https://www.postgresql.org/docs/current/queries-with.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/datatype-json.html"
+}
+
+artifact_store: "Private artifact store\n[proposed]" {
+  class: evidence_proposed
+  shape: cylinder
+  tooltip: "ID: artifact_store\nResponsibility: Store large logs, diffs, traces, and transcripts behind access control.\nOwner: Platform operator\nRuntime: Content-addressed object storage\nState variables: artifact_sha256; uri; sensitivity; retention_class\nInvariants: Digest and access policy remain attached to every artifact.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+projection_worker: "Correlation projector\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: projection_worker\nResponsibility: Build lineage, stack, review, freshness, and query projections from immutable facts.\nOwner: Tabellio maintainers\nRuntime: Node.js worker\nState variables: projection_revision; source_event_id; lag\nInvariants: Projections can be rebuilt from the ledger.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/queries-with.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/queries-with.html"
+}
+
+read_model: "Operational read model\n[proposed]" {
+  class: evidence_proposed
+  shape: cylinder
+  tooltip: "ID: read_model\nResponsibility: Serve current lineage, stack, review, and exact-head freshness queries.\nOwner: Tabellio maintainers\nRuntime: PostgreSQL read projection\nState variables: head_sha; review_status; projection_revision\nInvariants: A projection never authorizes a head different from its assessed head.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+context_broker: "Scoped context broker\n[proposed]" {
+  class: evidence_proposed
+  shape: rectangle
+  tooltip: "ID: context_broker\nResponsibility: Return bounded project-specific evidence and lessons to a review or agent run.\nOwner: Tabellio maintainers\nRuntime: Read-only Node.js API or MCP tool\nState variables: request_scope; head_sha; packet_digest; access_decision\nInvariants: Context is scoped to the requester, project, repository, and exact head.\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+source_adapters -> event_bus: "Canonical event / queue publish\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: adapters_to_bus\nRelationship: publishes\nContract: tabellio provenance event/v1\nAuthentication: workload identity\nMode: async\nTimeout: 2s\nRetries: exponential retry up to 5\nIdempotency: event_id plus payload_digest\nFallback: encrypted local spool\nFailure propagation: event is delayed or dead-lettered\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+event_bus -> ingest_worker: "Deliver canonical event / queue consumer\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: bus_to_ingest\nRelationship: subscribes\nContract: tabellio provenance event/v1\nAuthentication: consumer workload identity\nMode: async\nTimeout: 30s\nRetries: exponential retry up to 5\nIdempotency: event_id plus payload_digest\nFallback: dead-letter queue\nFailure propagation: projection and context data lag\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+ingest_worker -> canonicalizer: "Normalize incoming event / internal JSON API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: ingest_to_canonicalizer\nRelationship: calls\nContract: canonical event request\nAuthentication: mTLS or local workload identity\nMode: sync\nTimeout: 5s\nRetries: one retry for transient failure\nIdempotency: event_id\nFallback: dead-letter event\nFailure propagation: event is rejected\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+canonicalizer -> provenance_ledger: "Persist fact and relationships / PostgreSQL transaction\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: canonicalizer_to_ledger\nRelationship: writes\nContract: events, entities, typed relationship tables\nAuthentication: database workload credential\nMode: sync\nTimeout: 5s\nRetries: one transaction retry\nIdempotency: event_id unique constraint\nFallback: event remains pending\nFailure propagation: event is not durable\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/datatype-json.html @ PostgreSQL 18 current documentation; intended/external_document: https://www.postgresql.org/docs/current/ddl-constraints.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/datatype-json.html"
+}
+
+canonicalizer -> artifact_store: "Store large content by digest / content-addressed object API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: canonicalizer_to_artifacts\nRelationship: writes\nContract: artifact metadata and bytes\nAuthentication: scoped artifact-store credential\nMode: sync\nTimeout: 30s\nRetries: bounded retry\nIdempotency: artifact_sha256\nFallback: retain metadata as unavailable\nFailure propagation: event is partial and cannot satisfy raw-artifact requirement\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+projection_worker -> provenance_ledger: "Read immutable facts / PostgreSQL query\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: projector_reads_ledger\nRelationship: reads\nContract: ledger event and relationship schema\nAuthentication: read-only database credential\nMode: sync\nTimeout: 10s\nRetries: one retry\nIdempotency: projection_revision plus event_id\nFallback: retry projection later\nFailure propagation: read model lags\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/queries-with.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/queries-with.html"
+}
+
+projection_worker -> read_model: "Materialize query views / PostgreSQL transaction\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: projector_writes_read_model\nRelationship: writes\nContract: lineage, stack, review, and freshness projections\nAuthentication: projection workload credential\nMode: sync\nTimeout: 10s\nRetries: one transaction retry\nIdempotency: projection_revision plus entity_id\nFallback: rebuild from last checkpoint\nFailure propagation: context and operator views are stale\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/queries-with.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/queries-with.html"
+}
+
+context_broker -> read_model: "Read current lineage and review state / read-only query API\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: context_reads_projection\nRelationship: reads\nContract: scoped context query\nAuthentication: requester identity and project authorization\nMode: sync\nTimeout: 2s\nRetries: one retry\nIdempotency: request_id plus head_sha\nFallback: return no packet\nFailure propagation: agent run starts without context\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/architecture-diagrams.md:1#Tabellio System Architecture Diagrams @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+context_broker -> provenance_ledger: "Resolve exact facts and digests / read-only PostgreSQL query\n[proposed]" {
+  style: {
+    stroke: "#0D47A1"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: context_reads_ledger\nRelationship: reads\nContract: typed lineage and evidence records\nAuthentication: read-only database credential\nMode: sync\nTimeout: 2s\nRetries: one retry\nIdempotency: request_id plus head_sha\nFallback: return packet unavailable\nFailure propagation: context request is denied\nEvidence: intended/design_document: docs/agent-provenance-ledger-and-codex-feedback.md:1#Agent Provenance Ledger and Codex Feedback Plan @ 979a81d07994f8024c3b071581165de94685d2ca; intended/external_document: https://www.postgresql.org/docs/current/ddl-constraints.html @ PostgreSQL 18 current documentation"
+  link: "https://www.postgresql.org/docs/current/ddl-constraints.html"
+}
+
+_legend: "Evidence state" {
+  direction: right
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#9CA3AF"
+  }
+  supported: "Supported" {
+    class: evidence_supported
+  }
+  inferred: "Inferred" {
+    class: evidence_inferred
+  }
+  proposed: "Proposed" {
+    class: evidence_proposed
+  }
+  unknown: "Unknown" {
+    class: evidence_unknown
+  }
+  conflicted: "Conflicted" {
+    class: evidence_conflicted
+  }
+}

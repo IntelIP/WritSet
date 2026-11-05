@@ -1,0 +1,153 @@
+# Generated from baseline.yaml. Edit YAML or assets/d2-style.d2, then regenerate.
+direction: right
+classes: {
+  evidence_supported: {
+    style: {
+      fill: "#E8F5E9"
+      stroke: "#1B5E20"
+      border-radius: 6
+    }
+  }
+  evidence_inferred: {
+    style: {
+      fill: "#FFF8E1"
+      stroke: "#7A5A00"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_proposed: {
+    style: {
+      fill: "#E3F2FD"
+      stroke: "#0D47A1"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_unknown: {
+    style: {
+      fill: "#F5F5F5"
+      stroke: "#555555"
+      stroke-dash: 2
+      border-radius: 6
+    }
+  }
+  evidence_conflicted: {
+    style: {
+      fill: "#FFEBEE"
+      stroke: "#B71C1C"
+      stroke-width: 3
+      border-radius: 6
+    }
+  }
+}
+
+_view_title: "Current trust boundaries" {
+  shape: text
+}
+
+task_source: "Task source\n[inferred]" {
+  class: evidence_inferred
+  shape: rectangle
+  tooltip: "ID: task_source\nResponsibility: Provide the request and acceptance context.\nOwner: Operator or task system\nRuntime: Issue, ticket, chat, or manual request\nState variables: task_ref; acceptance_contract\nInvariants: Task intent is retained.\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli: "Tabellio Node CLI\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: tabellio_cli\nResponsibility: Orchestrate the Git-native agent workflow and evidence contracts.\nOwner: Tabellio maintainers\nRuntime: Node.js\nState variables: run_id; worktree; head_sha\nInvariants: Run state is bound to an exact repository and revision.\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+entire_source: "Entire checkpoint ledger\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: entire_source\nResponsibility: Provide checkpoint and session metadata for agent-assisted work.\nOwner: Entire\nRuntime: Entire CLI\nState variables: checkpoint_id; session_id; checkpoint_digest\nInvariants: Checkpoint identity is preserved.\nEvidence: implemented/source_code: scripts/providers/entire-ledger-provider.mjs:1#EntireLedgerProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+validation_worker: "Validation worker\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: validation_worker\nResponsibility: Run committed validation manifests against an exact revision.\nOwner: Operator-managed worker\nRuntime: Node.js and repository tools\nState variables: validation_id; revision; decision\nInvariants: Validation is bound to the assessed commit and manifest.\nEvidence: implemented/source_code: scripts/tabellio-validator.mjs:1#validation command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/validation-runner.md:1#Validation runner @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+git_spice: "git-spice\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: git_spice\nResponsibility: Represent stacked branches and change-request relationships.\nOwner: Operator-managed tool\nRuntime: git-spice executable\nState variables: branch; parent; children; head_sha\nInvariants: Stack snapshots are tied to the current repository state.\nEvidence: implemented/source_code: scripts/providers/git-spice-stack-manager.mjs:1#GitSpiceStackManager @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+github: "GitHub\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: github\nResponsibility: Store ordinary code and provide the pull-request review surface.\nOwner: GitHub\nRuntime: Hosted Git service\nState variables: pr_number; head_sha; checks; reviews\nInvariants: Code and review identity use repository and head identifiers.\nEvidence: implemented/source_code: scripts/providers/github-provider.mjs:1#GitHubProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command: "Review and reconciliation command\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: review_command\nResponsibility: Import GitHub and agent feedback, retain triage, and evaluate readiness.\nOwner: Tabellio maintainers\nRuntime: Node.js\nState variables: review_id; pr_number; head_sha; readiness\nInvariants: Stale feedback remains visible and cannot authorize a new head.\nEvidence: implemented/source_code: scripts/tabellio-review.mjs:1#review command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+task_source -> tabellio_cli: "Start run / task payload or CLI arguments\n[inferred]" {
+  style: {
+    stroke: "#7A5A00"
+    stroke-width: 2
+    stroke-dash: 4
+  }
+  tooltip: "ID: task_to_cli\nRelationship: feeds\nContract: taskSource\nAuthentication: operator identity\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: task_ref plus run_id\nFallback: reject run before workspace creation\nFailure propagation: run is not started\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> entire_source: "Resolve checkpoint metadata / Entire CLI JSON\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_entire\nRelationship: calls\nContract: entire checkpoint explain\nAuthentication: local Entire CLI\nMode: sync\nTimeout: 60s\nRetries: none\nIdempotency: checkpoint_id\nFallback: migration Git-note mode only\nFailure propagation: context capture fails\nEvidence: implemented/source_code: scripts/providers/entire-ledger-provider.mjs:1#EntireLedgerProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> validation_worker: "Run exact-commit validation / argv manifest\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_validator\nRelationship: calls\nContract: tabellio validation manifest\nAuthentication: worker identity\nMode: sync\nTimeout: bounded by worker policy\nRetries: none\nIdempotency: repository plus commit plus manifest_digest\nFallback: decision blocked\nFailure propagation: validation is failed or unavailable\nEvidence: implemented/source_code: scripts/tabellio-validator.mjs:1#validation command @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/validation-runner.md:1#Validation runner @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> git_spice: "Read or execute stack operation / git-spice CLI JSON\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_git_spice\nRelationship: calls\nContract: tabellio-stack/v0.1\nAuthentication: local operator identity\nMode: sync\nTimeout: 60s\nRetries: none\nIdempotency: operation_id plus head_sha\nFallback: publish no operation\nFailure propagation: stack state remains unchanged\nEvidence: implemented/source_code: scripts/providers/git-spice-stack-manager.mjs:1#GitSpiceStackManager @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+review_command -> github: "Read PR and review state / GitHub REST API\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: review_to_github\nRelationship: reads\nContract: repository, PR, review, check, and status responses\nAuthentication: scoped GitHub credential\nMode: sync\nTimeout: 15m\nRetries: bounded page retry\nIdempotency: repository plus pr_number plus head_sha\nFallback: retain stale evidence and mark validating\nFailure propagation: review cannot become ready\nEvidence: implemented/source_code: scripts/providers/github-provider.mjs:1#GitHubProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/review-loop.md:1#review loop @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+_legend: "Evidence state" {
+  direction: right
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#9CA3AF"
+  }
+  supported: "Supported" {
+    class: evidence_supported
+  }
+  inferred: "Inferred" {
+    class: evidence_inferred
+  }
+  proposed: "Proposed" {
+    class: evidence_proposed
+  }
+  unknown: "Unknown" {
+    class: evidence_unknown
+  }
+  conflicted: "Conflicted" {
+    class: evidence_conflicted
+  }
+}

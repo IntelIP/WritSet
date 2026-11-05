@@ -1,0 +1,137 @@
+# Generated from baseline.yaml. Edit YAML or assets/d2-style.d2, then regenerate.
+direction: right
+classes: {
+  evidence_supported: {
+    style: {
+      fill: "#E8F5E9"
+      stroke: "#1B5E20"
+      border-radius: 6
+    }
+  }
+  evidence_inferred: {
+    style: {
+      fill: "#FFF8E1"
+      stroke: "#7A5A00"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_proposed: {
+    style: {
+      fill: "#E3F2FD"
+      stroke: "#0D47A1"
+      stroke-dash: 4
+      border-radius: 6
+    }
+  }
+  evidence_unknown: {
+    style: {
+      fill: "#F5F5F5"
+      stroke: "#555555"
+      stroke-dash: 2
+      border-radius: 6
+    }
+  }
+  evidence_conflicted: {
+    style: {
+      fill: "#FFEBEE"
+      stroke: "#B71C1C"
+      stroke-width: 3
+      border-radius: 6
+    }
+  }
+}
+
+_view_title: "Current context capture scenario" {
+  shape: text
+}
+
+_scenario_context: "Scenario: Capture an agent run context" {
+  class: evidence_supported
+  tooltip: "Trigger: An operator starts an agent-assisted repository run.\nPreconditions: Repository and task source resolve.; Worktree can be isolated.\nControls: run_id; base_sha; head_sha; checkpoint_id\nOutputs: Context packet and evidence envelope bound to the run.\nFailures: Unknown checkpoint blocks context capture.; Integrity or schema validation fails.\nSignals: Context digest.; Evidence validation result.; Run failure reason."
+}
+
+tabellio_cli: "Tabellio Node CLI\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: tabellio_cli\nResponsibility: Orchestrate the Git-native agent workflow and evidence contracts.\nOwner: Tabellio maintainers\nRuntime: Node.js\nState variables: run_id; worktree; head_sha\nInvariants: Run state is bound to an exact repository and revision.\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+git_store: "Git repository and worktree\n[supported]" {
+  class: evidence_supported
+  shape: cylinder
+  tooltip: "ID: git_store\nResponsibility: Store commits, refs, diffs, branches, and isolated worktrees.\nOwner: Repository operator\nRuntime: Git\nState variables: commit_sha; ref; worktree\nInvariants: Commit IDs are immutable.\nEvidence: implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+entire_source: "Entire checkpoint ledger\n[supported]" {
+  class: evidence_supported
+  shape: rectangle
+  tooltip: "ID: entire_source\nResponsibility: Provide checkpoint and session metadata for agent-assisted work.\nOwner: Entire\nRuntime: Entire CLI\nState variables: checkpoint_id; session_id; checkpoint_digest\nInvariants: Checkpoint identity is preserved.\nEvidence: implemented/source_code: scripts/providers/entire-ledger-provider.mjs:1#EntireLedgerProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+context_packet: "Context packet\n[supported]" {
+  class: evidence_supported
+  shape: cylinder
+  tooltip: "ID: context_packet\nResponsibility: Bind task, actor, exact refs, changed files, and checkpoint metadata.\nOwner: Tabellio maintainers\nRuntime: Versioned JSON\nState variables: base_sha; head_sha; merge_base_sha; context_digest\nInvariants: Integrity excludes the self-integrity field from its hash.\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+evidence_store: "Evidence envelope\n[supported]" {
+  class: evidence_supported
+  shape: cylinder
+  tooltip: "ID: evidence_store\nResponsibility: Record commands, checks, approvals, artifacts, and side-effect policy.\nOwner: Tabellio maintainers\nRuntime: Versioned JSON\nState variables: run_id; head_sha; checks; approvals\nInvariants: Protected action classes default to deny.\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> git_store: "1. Resolve and manage repository state / Git CLI\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_git\nRelationship: calls\nContract: RepositoryStore\nAuthentication: local process identity\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: run_id plus exact ref\nFallback: fail closed\nFailure propagation: run is blocked\nEvidence: implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> entire_source: "2. Resolve checkpoint metadata / Entire CLI JSON\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_entire\nRelationship: calls\nContract: entire checkpoint explain\nAuthentication: local Entire CLI\nMode: sync\nTimeout: 60s\nRetries: none\nIdempotency: checkpoint_id\nFallback: migration Git-note mode only\nFailure propagation: context capture fails\nEvidence: implemented/source_code: scripts/providers/entire-ledger-provider.mjs:1#EntireLedgerProvider @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> context_packet: "3. Write exact context / canonical JSON\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_context\nRelationship: writes\nContract: tabellio-context/v0.1\nAuthentication: local process identity\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: run_id plus context_digest\nFallback: retain no packet\nFailure propagation: evidence cannot be bound\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; implemented/source_code: scripts/capture-tabellio-context.mjs:1#context capture @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+tabellio_cli -> evidence_store: "4. Write evidence envelope / canonical JSON\n[supported]" {
+  style: {
+    stroke: "#1B5E20"
+    stroke-width: 2
+  }
+  tooltip: "ID: cli_to_evidence\nRelationship: writes\nContract: tabellio-evidence/v0.1\nAuthentication: local process identity\nMode: sync\nTimeout: 30s\nRetries: none\nIdempotency: run_id plus evidence_digest\nFallback: retain failed evidence for diagnosis\nFailure propagation: evidence validation fails\nEvidence: intended/design_document: docs/workflow-model.md:1#Tabellio Workflow Model @ 979a81d07994f8024c3b071581165de94685d2ca; intended/design_document: docs/tooling-stack.md:1#Agentic Tooling Stack @ 979a81d07994f8024c3b071581165de94685d2ca"
+}
+
+_legend: "Evidence state" {
+  direction: right
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#9CA3AF"
+  }
+  supported: "Supported" {
+    class: evidence_supported
+  }
+  inferred: "Inferred" {
+    class: evidence_inferred
+  }
+  proposed: "Proposed" {
+    class: evidence_proposed
+  }
+  unknown: "Unknown" {
+    class: evidence_unknown
+  }
+  conflicted: "Conflicted" {
+    class: evidence_conflicted
+  }
+}

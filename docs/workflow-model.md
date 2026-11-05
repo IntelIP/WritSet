@@ -106,6 +106,12 @@ The workflow can document planned side effects before approval. It should not ex
 - Is the PR small enough to review?
 - Is evidence current for the final PR state?
 
+## Provenance and learning boundary
+
+The current workflow binds selected evidence to exact Git and checkpoint identities. It is not yet a complete event ledger for every model prompt, tool call, source, or output. The proposed event, relationship, storage, and Codex-feedback design is documented in [Agent provenance ledger and Codex feedback plan](agent-provenance-ledger-and-codex-feedback.md).
+
+Derived lessons must remain scoped, redacted, versioned, and evidence-linked. They may inform a future run; they do not override deterministic validation, security controls, human approval, or repository contracts.
+
 ## Extension Points
 
 Future versions can add:

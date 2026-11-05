@@ -1,0 +1,935 @@
+schema_version: 1
+snapshot:
+  repository: "/Users/hudson/Documents/GitHub/Tabellio"
+  revision: "979a81d07994f8024c3b071581165de94685d2ca"
+  dirty: true
+  observed_at: "2026-08-30T06:49:19Z"
+  track: "proposal-target"
+
+evidence:
+  - id: "target-design"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/agent-provenance-ledger-and-codex-feedback.md"
+      line: 1
+      symbol: "Agent Provenance Ledger and Codex Feedback Plan"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "target-diagrams"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/architecture-diagrams.md"
+      line: 1
+      symbol: "Tabellio System Architecture Diagrams"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-tooling"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/capture-tabellio-context.mjs"
+      line: 1
+      symbol: "context capture"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-entire"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/entire-ledger-provider.mjs"
+      line: 1
+      symbol: "EntireLedgerProvider"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-stack"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/git-spice-stack-manager.mjs"
+      line: 1
+      symbol: "GitSpiceStackManager"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-github"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/providers/github-provider.mjs"
+      line: 1
+      symbol: "GitHubProvider"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-validation"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/tabellio-validator.mjs"
+      line: 1
+      symbol: "validation command"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-review"
+    layer: "implemented"
+    source_type: "source_code"
+    locator:
+      path: "scripts/tabellio-review.mjs"
+      line: 1
+      symbol: "review command"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-worker-boundary"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/validation-runner.md"
+      line: 1
+      symbol: "scheduler-agnostic worker"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "current-operations"
+    layer: "intended"
+    source_type: "design_document"
+    locator:
+      path: "docs/operations-hardening.md"
+      line: 1
+      symbol: "worker and control-ref hardening"
+    revision: "979a81d07994f8024c3b071581165de94685d2ca"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "openai-observability"
+    layer: "intended"
+    source_type: "external_document"
+    locator:
+      url: "https://developers.openai.com/api/docs/guides/agents/integrations-observability"
+      symbol: "Agents SDK tracing and observability"
+    revision: "current-2026-08-30"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "openai-evals"
+    layer: "intended"
+    source_type: "external_document"
+    locator:
+      url: "https://developers.openai.com/api/docs/guides/agent-evals"
+      symbol: "Evaluate agent workflows"
+    revision: "current-2026-08-30"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "postgres-json"
+    layer: "intended"
+    source_type: "external_document"
+    locator:
+      url: "https://www.postgresql.org/docs/current/datatype-json.html"
+      symbol: "JSONB types and indexing"
+    revision: "PostgreSQL 18 current documentation"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "postgres-constraints"
+    layer: "intended"
+    source_type: "external_document"
+    locator:
+      url: "https://www.postgresql.org/docs/current/ddl-constraints.html"
+      symbol: "foreign-key constraints"
+    revision: "PostgreSQL 18 current documentation"
+    observed_at: "2026-08-30T06:49:19Z"
+  - id: "postgres-recursive"
+    layer: "intended"
+    source_type: "external_document"
+    locator:
+      url: "https://www.postgresql.org/docs/current/queries-with.html"
+      symbol: "recursive hierarchy queries"
+    revision: "PostgreSQL 18 current documentation"
+    observed_at: "2026-08-30T06:49:19Z"
+
+nodes:
+  - id: "task_source"
+    label: "Task source"
+    kind: "external"
+    responsibility: "Provide task intent and acceptance context."
+    owner: "Operator or task system"
+    runtime: "Issue, ticket, chat, or manual request"
+    state_variables: ["task_ref", "acceptance_contract"]
+    invariants: ["Task intent is retained."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["current-tooling", "target-design"]
+  - id: "agent_runtime"
+    label: "Agent runtime"
+    kind: "external"
+    responsibility: "Produce model decisions, tool calls, edits, and bounded outputs."
+    owner: "Agent runtime operator"
+    runtime: "Codex or compatible agent"
+    state_variables: ["run_id", "trace_id", "tool_call_id"]
+    invariants: ["Runtime events carry source identity and run identity."]
+    external: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-observability"]
+  - id: "git_source"
+    label: "Git repository"
+    kind: "external"
+    responsibility: "Remain the authority for commits, refs, diffs, and ancestry."
+    owner: "Repository operator"
+    runtime: "Git"
+    state_variables: ["commit_sha", "ref", "merge_base"]
+    invariants: ["Commit IDs are immutable."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["current-tooling"]
+  - id: "entire_source"
+    label: "Entire checkpoint ledger"
+    kind: "external"
+    responsibility: "Remain the authority for checkpoint and session context."
+    owner: "Entire"
+    runtime: "Entire CLI"
+    state_variables: ["checkpoint_id", "session_id", "checkpoint_digest"]
+    invariants: ["Checkpoint identity is retained without copying transcript bytes into the ledger."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["current-entire"]
+  - id: "github_source"
+    label: "GitHub"
+    kind: "external"
+    responsibility: "Provide hosted code, pull requests, reviews, comments, and checks."
+    owner: "GitHub"
+    runtime: "Hosted Git service"
+    state_variables: ["pr_number", "head_sha", "checks", "reviews"]
+    invariants: ["Review facts identify the exact repository and head."]
+    external: true
+    evidence_state: "supported"
+    evidence: ["current-github"]
+  - id: "ci_source"
+    label: "CI and Buildkite"
+    kind: "external"
+    responsibility: "Provide build and check outcomes."
+    owner: "CI operator"
+    runtime: "Hosted or operator-managed CI"
+    state_variables: ["build_id", "commit_sha", "status"]
+    invariants: ["Check result identifies the assessed revision."]
+    external: true
+    evidence_state: "inferred"
+    evidence: ["target-design", "current-worker-boundary"]
+  - id: "source_adapters"
+    label: "Source adapters"
+    kind: "service"
+    responsibility: "Translate provider records into bounded canonical events."
+    owner: "Tabellio maintainers"
+    runtime: "Node.js worker"
+    state_variables: ["source_event_id", "adapter_version", "idempotency_key"]
+    invariants: ["Provider-specific differences do not change canonical identity fields."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "event_bus"
+    label: "Event queue"
+    kind: "queue"
+    responsibility: "Buffer canonical events and provide retry/backpressure behavior."
+    owner: "Platform operator"
+    runtime: "Managed queue or durable local queue"
+    state_variables: ["event_id", "delivery_count", "dead_letter_state"]
+    invariants: ["Delivery is at-least-once and consumers are idempotent."]
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "ingest_worker"
+    label: "Ingest worker"
+    kind: "service"
+    responsibility: "Accept events, enforce idempotency, and coordinate canonical persistence."
+    owner: "Tabellio maintainers"
+    runtime: "Node.js worker"
+    state_variables: ["event_id", "ingest_status", "payload_digest"]
+    invariants: ["A retry does not create duplicate evidence."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "canonicalizer"
+    label: "Redaction and canonicalizer"
+    kind: "service"
+    responsibility: "Redact secrets, classify sensitivity, canonicalize payloads, and compute digests."
+    owner: "Security and Tabellio maintainers"
+    runtime: "Node.js worker"
+    state_variables: ["redaction_status", "sensitivity", "payload_sha256"]
+    invariants: ["Secrets are blocked before durable persistence."]
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "provenance_ledger"
+    label: "PostgreSQL provenance ledger"
+    kind: "database"
+    responsibility: "Store typed facts, JSONB payloads, stable identities, and critical relationships."
+    owner: "Tabellio maintainers"
+    runtime: "PostgreSQL"
+    state_variables: ["run_id", "event_id", "repository_id", "commit_sha", "checkpoint_id"]
+    invariants: ["Critical references satisfy relational constraints.", "Facts are append-only or dispositioned."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "postgres-json", "postgres-constraints", "postgres-recursive"]
+  - id: "artifact_store"
+    label: "Private artifact store"
+    kind: "data_store"
+    responsibility: "Store large logs, diffs, traces, and transcripts behind access control."
+    owner: "Platform operator"
+    runtime: "Content-addressed object storage"
+    state_variables: ["artifact_sha256", "uri", "sensitivity", "retention_class"]
+    invariants: ["Digest and access policy remain attached to every artifact."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "projection_worker"
+    label: "Correlation projector"
+    kind: "service"
+    responsibility: "Build lineage, stack, review, freshness, and query projections from immutable facts."
+    owner: "Tabellio maintainers"
+    runtime: "Node.js worker"
+    state_variables: ["projection_revision", "source_event_id", "lag"]
+    invariants: ["Projections can be rebuilt from the ledger."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams", "postgres-recursive"]
+  - id: "read_model"
+    label: "Operational read model"
+    kind: "database"
+    responsibility: "Serve current lineage, stack, review, and exact-head freshness queries."
+    owner: "Tabellio maintainers"
+    runtime: "PostgreSQL read projection"
+    state_variables: ["head_sha", "review_status", "projection_revision"]
+    invariants: ["A projection never authorizes a head different from its assessed head."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "validation_worker"
+    label: "Validation worker"
+    kind: "service"
+    responsibility: "Run deterministic product, schema, policy, operational, and security checks."
+    owner: "Operator-managed worker"
+    runtime: "Node.js and repository tools"
+    state_variables: ["validation_id", "commit_sha", "manifest_digest", "decision"]
+    invariants: ["Validation is bound to an exact revision and manifest."]
+    evidence_state: "supported"
+    evidence: ["current-validation", "current-worker-boundary"]
+  - id: "security_gate"
+    label: "Security gate"
+    kind: "service"
+    responsibility: "Run security-specific checks and emit bounded security evidence."
+    owner: "Security reviewer and Tabellio maintainers"
+    runtime: "Trusted validation worker"
+    state_variables: ["security_run_id", "commit_sha", "policy_decision"]
+    invariants: ["Agent claims never substitute for deterministic security evidence."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "current-operations"]
+  - id: "context_broker"
+    label: "Scoped context broker"
+    kind: "service"
+    responsibility: "Return bounded project-specific evidence and lessons to a review or agent run."
+    owner: "Tabellio maintainers"
+    runtime: "Read-only Node.js API or MCP tool"
+    state_variables: ["request_scope", "head_sha", "packet_digest", "access_decision"]
+    invariants: ["Context is scoped to the requester, project, repository, and exact head."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "codex_review"
+    label: "Codex review consumer"
+    kind: "external"
+    responsibility: "Interpret bounded evidence, identify risks, and propose review findings."
+    owner: "Review operator"
+    runtime: "Codex or compatible agent"
+    state_variables: ["review_id", "head_sha", "finding_ids"]
+    invariants: ["Codex review does not replace deterministic gates or human approval."]
+    external: true
+    evidence_state: "inferred"
+    evidence: ["current-review", "target-design", "openai-observability"]
+  - id: "evaluation_worker"
+    label: "Evaluation and lesson worker"
+    kind: "service"
+    responsibility: "Replay cases, compare behavior, and create scoped candidate lessons."
+    owner: "Tabellio maintainers and evaluation owner"
+    runtime: "Node.js worker and evaluation harness"
+    state_variables: ["case_id", "baseline_version", "candidate_version", "outcome"]
+    invariants: ["Lessons require evidence references and versioned outcomes."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-evals"]
+  - id: "lesson_store"
+    label: "Scoped lesson store"
+    kind: "database"
+    responsibility: "Store versioned project, organization, and general lessons with evidence links."
+    owner: "Tabellio maintainers"
+    runtime: "PostgreSQL projection"
+    state_variables: ["lesson_id", "scope", "status", "version", "evidence_refs"]
+    invariants: ["Candidate lessons do not silently change global behavior."]
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-evals"]
+  - id: "human_approver"
+    label: "Human approver"
+    kind: "external"
+    responsibility: "Own accepted risk, privacy decisions, and promotion approval."
+    owner: "Assigned human owner"
+    runtime: "Review interface"
+    state_variables: ["decision", "approver", "decision_time"]
+    invariants: ["The system never fabricates human approval."]
+    external: true
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+
+edges:
+  - id: "task_to_adapters"
+    from: "task_source"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Task event"
+    protocol: "JSON or webhook"
+    contract: "task event envelope"
+    authentication: "scoped task-source credential"
+    mode: "async"
+    timeout: "10s"
+    retries: "exponential retry up to 5"
+    idempotency: "source_event_id plus task_ref"
+    fallback: "durable source retry or operator queue"
+    failure_propagation: "run remains un-ingested"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "agent_to_adapters"
+    from: "agent_runtime"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Agent trace event"
+    protocol: "trace export or bounded event API"
+    contract: "agent event envelope"
+    authentication: "runtime identity and signed request"
+    mode: "async"
+    timeout: "10s"
+    retries: "exponential retry up to 5"
+    idempotency: "trace_id plus tool_call_id plus payload_digest"
+    fallback: "local encrypted spool"
+    failure_propagation: "event is marked unavailable"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-observability"]
+  - id: "git_to_adapters"
+    from: "git_source"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Commit and ref event"
+    protocol: "Git hook, polling adapter, or webhook"
+    contract: "Git identity event"
+    authentication: "repository identity"
+    mode: "async"
+    timeout: "30s"
+    retries: "bounded retry"
+    idempotency: "repository_id plus commit_sha plus ref"
+    fallback: "reconcile from Git history"
+    failure_propagation: "projection lag"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "current-tooling"]
+  - id: "entire_to_adapters"
+    from: "entire_source"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Checkpoint event"
+    protocol: "Entire CLI JSON or checkpoint export"
+    contract: "checkpoint event envelope"
+    authentication: "local or scoped Entire identity"
+    mode: "async"
+    timeout: "60s"
+    retries: "bounded retry"
+    idempotency: "provider plus checkpoint_id plus checkpoint_digest"
+    fallback: "retain local checkpoint reference"
+    failure_propagation: "lineage is incomplete"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["current-entire", "target-design"]
+  - id: "github_to_adapters"
+    from: "github_source"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "PR and review event"
+    protocol: "GitHub webhook or bounded API poll"
+    contract: "PR/review/check event envelope"
+    authentication: "webhook signature or scoped GitHub credential"
+    mode: "async"
+    timeout: "30s"
+    retries: "exponential retry up to 5"
+    idempotency: "repository_id plus event_id"
+    fallback: "bounded reconciliation poll"
+    failure_propagation: "review projection lags"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["current-github", "target-design"]
+  - id: "ci_to_adapters"
+    from: "ci_source"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Build and check event"
+    protocol: "CI webhook or artifact export"
+    contract: "validation event envelope"
+    authentication: "CI workload identity"
+    mode: "async"
+    timeout: "30s"
+    retries: "exponential retry up to 5"
+    idempotency: "provider plus build_id plus commit_sha"
+    fallback: "reconcile from CI"
+    failure_propagation: "validation evidence is pending"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["current-worker-boundary", "target-design"]
+  - id: "adapters_to_bus"
+    from: "source_adapters"
+    to: "event_bus"
+    relationship: "publishes"
+    label: "Canonical event"
+    protocol: "queue publish"
+    contract: "tabellio provenance event/v1"
+    authentication: "workload identity"
+    mode: "async"
+    timeout: "2s"
+    retries: "exponential retry up to 5"
+    idempotency: "event_id plus payload_digest"
+    fallback: "encrypted local spool"
+    failure_propagation: "event is delayed or dead-lettered"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "bus_to_ingest"
+    from: "event_bus"
+    to: "ingest_worker"
+    relationship: "subscribes"
+    label: "Deliver canonical event"
+    protocol: "queue consumer"
+    contract: "tabellio provenance event/v1"
+    authentication: "consumer workload identity"
+    mode: "async"
+    timeout: "30s"
+    retries: "exponential retry up to 5"
+    idempotency: "event_id plus payload_digest"
+    fallback: "dead-letter queue"
+    failure_propagation: "projection and context data lag"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "ingest_to_canonicalizer"
+    from: "ingest_worker"
+    to: "canonicalizer"
+    relationship: "calls"
+    label: "Normalize incoming event"
+    protocol: "internal JSON API"
+    contract: "canonical event request"
+    authentication: "mTLS or local workload identity"
+    mode: "sync"
+    timeout: "5s"
+    retries: "one retry for transient failure"
+    idempotency: "event_id"
+    fallback: "dead-letter event"
+    failure_propagation: "event is rejected"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "canonicalizer_to_ledger"
+    from: "canonicalizer"
+    to: "provenance_ledger"
+    relationship: "writes"
+    label: "Persist fact and relationships"
+    protocol: "PostgreSQL transaction"
+    contract: "events, entities, typed relationship tables"
+    authentication: "database workload credential"
+    mode: "sync"
+    timeout: "5s"
+    retries: "one transaction retry"
+    idempotency: "event_id unique constraint"
+    fallback: "event remains pending"
+    failure_propagation: "event is not durable"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design", "postgres-json", "postgres-constraints"]
+  - id: "canonicalizer_to_artifacts"
+    from: "canonicalizer"
+    to: "artifact_store"
+    relationship: "writes"
+    label: "Store large content by digest"
+    protocol: "content-addressed object API"
+    contract: "artifact metadata and bytes"
+    authentication: "scoped artifact-store credential"
+    mode: "sync"
+    timeout: "30s"
+    retries: "bounded retry"
+    idempotency: "artifact_sha256"
+    fallback: "retain metadata as unavailable"
+    failure_propagation: "event is partial and cannot satisfy raw-artifact requirement"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "projector_reads_ledger"
+    from: "projection_worker"
+    to: "provenance_ledger"
+    relationship: "reads"
+    label: "Read immutable facts"
+    protocol: "PostgreSQL query"
+    contract: "ledger event and relationship schema"
+    authentication: "read-only database credential"
+    mode: "sync"
+    timeout: "10s"
+    retries: "one retry"
+    idempotency: "projection_revision plus event_id"
+    fallback: "retry projection later"
+    failure_propagation: "read model lags"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design", "postgres-recursive"]
+  - id: "projector_writes_read_model"
+    from: "projection_worker"
+    to: "read_model"
+    relationship: "writes"
+    label: "Materialize query views"
+    protocol: "PostgreSQL transaction"
+    contract: "lineage, stack, review, and freshness projections"
+    authentication: "projection workload credential"
+    mode: "sync"
+    timeout: "10s"
+    retries: "one transaction retry"
+    idempotency: "projection_revision plus entity_id"
+    fallback: "rebuild from last checkpoint"
+    failure_propagation: "context and operator views are stale"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design", "postgres-recursive"]
+  - id: "validation_to_adapters"
+    from: "validation_worker"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Validation result event"
+    protocol: "canonical event API"
+    contract: "validation event envelope"
+    authentication: "trusted worker identity"
+    mode: "async"
+    timeout: "10s"
+    retries: "exponential retry up to 5"
+    idempotency: "validation_id plus commit_sha plus manifest_digest"
+    fallback: "retain local validation result"
+    failure_propagation: "ledger validation state lags"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["current-validation", "target-design"]
+  - id: "security_to_adapters"
+    from: "security_gate"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Security result event"
+    protocol: "canonical event API"
+    contract: "security evidence envelope"
+    authentication: "trusted security-worker identity"
+    mode: "async"
+    timeout: "10s"
+    retries: "exponential retry up to 5"
+    idempotency: "security_run_id plus commit_sha plus policy_version"
+    fallback: "security status remains pending"
+    failure_propagation: "readiness remains blocked"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "current-operations"]
+  - id: "context_reads_projection"
+    from: "context_broker"
+    to: "read_model"
+    relationship: "reads"
+    label: "Read current lineage and review state"
+    protocol: "read-only query API"
+    contract: "scoped context query"
+    authentication: "requester identity and project authorization"
+    mode: "sync"
+    timeout: "2s"
+    retries: "one retry"
+    idempotency: "request_id plus head_sha"
+    fallback: "return no packet"
+    failure_propagation: "agent run starts without context"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "target-diagrams"]
+  - id: "context_reads_ledger"
+    from: "context_broker"
+    to: "provenance_ledger"
+    relationship: "reads"
+    label: "Resolve exact facts and digests"
+    protocol: "read-only PostgreSQL query"
+    contract: "typed lineage and evidence records"
+    authentication: "read-only database credential"
+    mode: "sync"
+    timeout: "2s"
+    retries: "one retry"
+    idempotency: "request_id plus head_sha"
+    fallback: "return packet unavailable"
+    failure_propagation: "context request is denied"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "postgres-constraints"]
+  - id: "context_reads_lessons"
+    from: "context_broker"
+    to: "lesson_store"
+    relationship: "reads"
+    label: "Read scoped lessons"
+    protocol: "read-only query API"
+    contract: "versioned lesson and evidence references"
+    authentication: "project-scoped authorization"
+    mode: "sync"
+    timeout: "2s"
+    retries: "one retry"
+    idempotency: "request_id plus scope plus head_sha"
+    fallback: "return context without lessons"
+    failure_propagation: "run continues without optional lessons"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+  - id: "context_to_codex"
+    from: "context_broker"
+    to: "codex_review"
+    relationship: "calls"
+    label: "Provide bounded review context"
+    protocol: "MCP or read-only API"
+    contract: "scoped context packet"
+    authentication: "agent identity and project authorization"
+    mode: "sync"
+    timeout: "30s"
+    retries: "none"
+    idempotency: "request_id plus packet_digest"
+    fallback: "Codex reviews without optional context and marks limitation"
+    failure_propagation: "review context is unavailable"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-observability"]
+  - id: "codex_to_adapters"
+    from: "codex_review"
+    to: "source_adapters"
+    relationship: "publishes"
+    label: "Review findings and outcome"
+    protocol: "validated review event API"
+    contract: "tabellio-agent-review/v0.1"
+    authentication: "reviewer identity and bounded artifact reference"
+    mode: "async"
+    timeout: "10s"
+    retries: "exponential retry up to 5"
+    idempotency: "review_id plus head_sha plus finding_digest"
+    fallback: "retain review artifact for later import"
+    failure_propagation: "review ledger remains pending"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["current-review", "target-design"]
+  - id: "evaluation_reads_model"
+    from: "evaluation_worker"
+    to: "read_model"
+    relationship: "reads"
+    label: "Select replay cases and outcomes"
+    protocol: "read-only query API"
+    contract: "validated finding and outcome projection"
+    authentication: "evaluation workload identity"
+    mode: "sync"
+    timeout: "10s"
+    retries: "one retry"
+    idempotency: "case_id plus projection_revision"
+    fallback: "case remains pending"
+    failure_propagation: "lesson promotion is delayed"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-evals"]
+  - id: "evaluation_writes_lessons"
+    from: "evaluation_worker"
+    to: "lesson_store"
+    relationship: "writes"
+    label: "Store candidate or approved lesson"
+    protocol: "PostgreSQL transaction"
+    contract: "versioned lesson with evidence references"
+    authentication: "evaluation workload credential"
+    mode: "sync"
+    timeout: "5s"
+    retries: "one transaction retry"
+    idempotency: "lesson_id plus version"
+    fallback: "retain candidate artifact"
+    failure_propagation: "lesson is not available for retrieval"
+    trust_boundary: false
+    evidence_state: "proposed"
+    evidence: ["target-design", "openai-evals"]
+  - id: "evaluation_to_human"
+    from: "evaluation_worker"
+    to: "human_approver"
+    relationship: "calls"
+    label: "Request promotion decision"
+    protocol: "review UI or approval API"
+    contract: "lesson promotion record"
+    authentication: "named human identity"
+    mode: "sync"
+    timeout: "7d"
+    retries: "none"
+    idempotency: "lesson_id plus version"
+    fallback: "remain candidate"
+    failure_propagation: "lesson cannot become approved"
+    trust_boundary: true
+    evidence_state: "proposed"
+    evidence: ["target-design"]
+
+scenarios:
+  - id: "capture_and_correlate"
+    label: "Capture and correlate a bounded event"
+    trigger: "An agent, Git, Entire, CI, or GitHub source emits a relevant event."
+    preconditions: ["Source identity is known.", "Event contains a run or source id."]
+    control_variables: ["event_id", "run_id", "payload_digest", "repository_id", "commit_sha"]
+    steps:
+      - edge: "agent_to_adapters"
+        when: "The agent runtime emits a bounded tool or model event."
+        state_effects:
+          - node: "source_adapters"
+            variable: "source_event_id"
+            operation: "accept and normalize source identity"
+      - edge: "adapters_to_bus"
+        when: "The event passes adapter shape checks."
+        state_effects:
+          - node: "event_bus"
+            variable: "event_id"
+            operation: "enqueue canonical event"
+      - edge: "bus_to_ingest"
+        when: "The queue delivers the event."
+        state_effects:
+          - node: "ingest_worker"
+            variable: "ingest_status"
+            operation: "claim idempotent delivery"
+      - edge: "ingest_to_canonicalizer"
+        when: "The event is not a duplicate."
+        state_effects:
+          - node: "canonicalizer"
+            variable: "redaction_status"
+            operation: "redact and classify"
+      - edge: "canonicalizer_to_ledger"
+        when: "The event passes redaction and schema checks."
+        state_effects:
+          - node: "provenance_ledger"
+            variable: "event_id"
+            operation: "persist fact and critical relationships"
+      - edge: "canonicalizer_to_artifacts"
+        when: "The event references large content."
+        state_effects:
+          - node: "artifact_store"
+            variable: "artifact_sha256"
+            operation: "persist content-addressed artifact"
+      - edge: "projector_reads_ledger"
+        when: "A new ledger revision is available."
+        state_effects:
+          - node: "projection_worker"
+            variable: "projection_revision"
+            operation: "consume immutable facts"
+      - edge: "projector_writes_read_model"
+        when: "Lineage and review projections are rebuilt."
+        state_effects:
+          - node: "read_model"
+            variable: "projection_revision"
+            operation: "publish query projection"
+    outputs: ["Evidence event, artifact references, and rebuildable lineage projection."]
+    failure_outcomes: ["Duplicate is safely ignored.", "Redaction failure rejects event.", "Queue or database outage delays projection.", "Unknown identity is quarantined."]
+    observable_signals: ["Ingest latency.", "Duplicate counter.", "Dead-letter count.", "Projection lag.", "Payload digest."]
+  - id: "final_head_review"
+    label: "Review an exact final head"
+    trigger: "A stacked PR or integrated candidate requests readiness."
+    preconditions: ["Repository and exact head SHA resolve.", "Relevant validation and security events are present."]
+    control_variables: ["repository_id", "head_sha", "manifest_digest", "review_id", "packet_digest"]
+    steps:
+      - edge: "validation_to_adapters"
+        when: "Deterministic validation completes."
+        state_effects:
+          - node: "validation_worker"
+            variable: "decision"
+            operation: "emit exact-head validation event"
+      - edge: "security_to_adapters"
+        when: "Security checks complete."
+        state_effects:
+          - node: "security_gate"
+            variable: "policy_decision"
+            operation: "emit security evidence event"
+      - edge: "projector_reads_ledger"
+        when: "Validation, security, Git, checkpoint, and review events are durable."
+        state_effects:
+          - node: "projection_worker"
+            variable: "projection_revision"
+            operation: "rebuild exact-head projections"
+      - edge: "projector_writes_read_model"
+        when: "The final head projection is current."
+        state_effects:
+          - node: "read_model"
+            variable: "head_sha"
+            operation: "publish current head state"
+      - edge: "context_reads_projection"
+        when: "A scoped review packet is requested."
+        state_effects:
+          - node: "context_broker"
+            variable: "access_decision"
+            operation: "authorize project-scoped query"
+      - edge: "context_reads_ledger"
+        when: "The packet needs exact evidence digests."
+        state_effects:
+          - node: "context_broker"
+            variable: "packet_digest"
+            operation: "bind exact facts"
+      - edge: "context_to_codex"
+        when: "The packet passes scope and freshness checks."
+        state_effects:
+          - node: "codex_review"
+            variable: "head_sha"
+            operation: "review bounded context"
+      - edge: "codex_to_adapters"
+        when: "Codex emits validated findings."
+        state_effects:
+          - node: "source_adapters"
+            variable: "source_event_id"
+            operation: "ingest review outcome"
+    outputs: ["Exact-head review packet and review findings tied to evidence."]
+    failure_outcomes: ["Head change makes prior evidence stale.", "Missing security evidence blocks readiness.", "Out-of-scope context request is denied.", "Codex output is retained as a finding, not approval."]
+    observable_signals: ["Stale-head rejection.", "Packet digest.", "Validation decision.", "Security decision.", "Review finding disposition."]
+  - id: "promote_project_lesson"
+    label: "Promote a project lesson"
+    trigger: "Repeated validated outcomes suggest a behavior or workflow lesson."
+    preconditions: ["Evidence links resolve.", "Project and privacy scope are known.", "Replay case is reproducible."]
+    control_variables: ["case_id", "baseline_version", "candidate_version", "lesson_id", "scope"]
+    steps:
+      - edge: "evaluation_reads_model"
+        when: "A replayable case is selected."
+        state_effects:
+          - node: "evaluation_worker"
+            variable: "outcome"
+            operation: "compare baseline and candidate behavior"
+      - edge: "evaluation_to_human"
+        when: "The comparison meets promotion thresholds."
+        state_effects:
+          - node: "human_approver"
+            variable: "decision"
+            operation: "review evidence and scope"
+      - edge: "evaluation_writes_lessons"
+        when: "The lesson is accepted for its declared scope."
+        state_effects:
+          - node: "lesson_store"
+            variable: "status"
+            operation: "store versioned lesson"
+      - edge: "context_reads_lessons"
+        when: "A later project-scoped run requests applicable guidance."
+        state_effects:
+          - node: "context_broker"
+            variable: "request_scope"
+            operation: "retrieve only authorized lesson"
+    outputs: ["Versioned lesson with evidence references and explicit scope."]
+    failure_outcomes: ["Insufficient recurrence keeps lesson as candidate.", "Privacy review rejects global promotion.", "Regression retires the lesson.", "Missing evidence prevents retrieval."]
+    observable_signals: ["Evaluation result.", "Human decision.", "Lesson version.", "Scope and evidence references.", "Later recurrence rate."]
+
+views:
+  - id: "context"
+    title: "Target context and evidence path"
+    type: "context"
+    nodes: ["agent_runtime", "source_adapters", "ingest_worker", "canonicalizer", "provenance_ledger", "projection_worker", "read_model", "context_broker", "codex_review"]
+  - id: "topology"
+    title: "Target provenance service topology"
+    type: "topology"
+    nodes: ["*"]
+  - id: "data"
+    title: "Target data and projection boundaries"
+    type: "data"
+    nodes: ["event_bus", "ingest_worker", "canonicalizer", "provenance_ledger", "artifact_store", "projection_worker", "read_model", "evaluation_worker", "lesson_store"]
+  - id: "trust"
+    title: "Target trust boundaries"
+    type: "trust"
+    nodes: ["task_source", "agent_runtime", "source_adapters", "canonicalizer", "provenance_ledger", "artifact_store", "context_broker", "codex_review", "human_approver"]
+  - id: "failure"
+    title: "Target failure and recovery topology"
+    type: "failure"
+    nodes: ["source_adapters", "event_bus", "ingest_worker", "canonicalizer", "provenance_ledger", "artifact_store", "projection_worker", "read_model", "context_broker"]
+  - id: "capture_and_correlate"
+    title: "Target capture and correlation scenario"
+    type: "scenario"
+    scenario: "capture_and_correlate"
+  - id: "final_head_review"
+    title: "Target exact-head review scenario"
+    type: "scenario"
+    scenario: "final_head_review"
+  - id: "promote_project_lesson"
+    title: "Target project lesson promotion scenario"
+    type: "scenario"
+    scenario: "promote_project_lesson"

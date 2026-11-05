@@ -2,6 +2,8 @@
 
 Tabellio owns the minimum Git substrate agents need. It uses standard Git rather than requiring a proprietary code-storage API. GitHub is the code store and thin pull-request shell, not the workflow control plane.
 
+See [System architecture diagrams](architecture-diagrams.md) for current and proposed service boundaries, provenance correlation, PR review flow, and the Codex feedback loop.
+
 The main idea: agentic Git should be built around more than a patch. It should preserve the work request, the reason for the change, the runtime that produced it, the commands that ran, the checkpoints that explain it, and the side effects that require approval.
 
 ## Layer Map

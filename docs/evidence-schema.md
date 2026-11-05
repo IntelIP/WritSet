@@ -50,6 +50,12 @@ The smallest maintained valid fixture lives at `examples/tabellio-evidence/minim
 
 Use that fixture instead of copying a shortened shape: the validators require at least one command, one check, and the complete default-deny action-class set.
 
+## Provenance extension
+
+The evidence envelope remains the portable record format. A future provenance ledger may index these envelopes alongside typed events, entities, relationships, Git commits, Entire checkpoints, validations, reviews, findings, and artifacts. The proposed storage and correlation model is documented in [Agent provenance ledger and Codex feedback plan](agent-provenance-ledger-and-codex-feedback.md).
+
+The future ledger must preserve the current boundary: exact repository and commit identity, visible failed or skipped checks, default-deny external actions, artifact digests, and independent validation. JSON payloads do not replace those relationships or controls.
+
 ## Status Values
 
 | Field | Allowed Values |
